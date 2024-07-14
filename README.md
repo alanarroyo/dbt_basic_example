@@ -153,3 +153,7 @@ This will show the first  5 records of the Titanic Dataset:
 
 Then exit DuckDB by running `.quit`.
 
+## Running our first transformation
+
+Our first transformation will be simply to retain only two columns, `Passenger Id` and `Name`, from our `titanic_source` table and saving this into a table called `titanic_2_cols`. This is done, first by creating  
+a new file `titanic_2_cols_trans.sql` within  the `models\titanic` folder
