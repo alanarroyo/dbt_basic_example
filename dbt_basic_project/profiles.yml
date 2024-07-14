@@ -1,0 +1,11 @@
+dbt_basic_project:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '/tmp/titanic.db' #temporary intermediate location used by duckdb
+      schema: 'titanic_apps'
+
+
+
+
