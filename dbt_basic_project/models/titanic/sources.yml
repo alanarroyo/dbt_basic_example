@@ -1,8 +1,10 @@
 version: 2 # indicates dbt version
 
 sources: 
-  - name: titanic_src # reference name for schema keeping csv table
-    meta: 
-      external_location: 'from read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")'
+  - name: titanic_src
+    meta:
+      # next line includes duckdb statement to read data
+      external_location: '(select * from read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv") )'
+      formatter: oldstyle
     tables:
-      - name: titanic_tbl # reference name for the csv table 
+      - name: titanic_tbl
