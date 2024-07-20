@@ -1,11 +1,12 @@
+-- #models\titanic\titanic_2_cols_trans.sql
 
--- First part tells dbt where and how to save the target data
+-- First  block starts --
 {{ config(
-    materialized='external',
-    location='output/titanic_2_cols.parquet',
-    format='parquet'
-)}}--#1
+      materialized='external',
+      location='output/titanic_2_cols.parquet',
+      format='parquet')
+}}
 
--- Second part is duckDB SQL code indicating the transformations
+-- Second block starts part is duckDB SQL code indicating the transformations, selecting data from source as indicated in sources.yml
 select *
-from {{ source('titanic_src', 'titanic_tbl') }}
+from {{ source('titanic_src', 'titanic_tbl') }} 
