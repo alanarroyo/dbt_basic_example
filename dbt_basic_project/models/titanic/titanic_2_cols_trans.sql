@@ -7,6 +7,6 @@
       format='parquet')
 }}
 
--- Second block starts part is duckDB SQL code indicating the transformations, selecting data from source as indicated in sources.yml
-select *
+-- Second block starts
+select PassengerId, Name
 from {{ source('titanic_src', 'titanic_tbl') }} 
