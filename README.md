@@ -186,8 +186,36 @@ run dbt
 ```
 If things go well,  you will see a message that the process has been completed successfully.
 
+To double check that dbt executed our first transformation model successfully, open the resulting `dev.duckdb` file obtained after the execution by simply changing the location of the terminal to this file location and by running
+
+```bash
+duckdb dev.duckdb
+```
+This will open the DuckDB database where the result of our models will be saved as tables. Run 
+```sql
+SELECT * from titanic_2_cols_trans
+ ```
+to verify that the result of your model is available in the database
+
 ## Transformation referring to a previous model
-In the previous section we saw how to specifify in dbt a transformation starting from an external source. In this section we will see how to do the same but departing from a model that has been already build.
+In the previous section we saw how to specifify in dbt a transformation starting from an external source. In this section we will see how to do the same but departing from a table that we built in the previous section
 
-Let us create a new file called `titanic_names.sql`
+We start by creating a new file  `models\titanic\titanic_names.sql` with the following content:
+```sql
+--# titanic_names.sql
+{{ config(
+      materialized='external',
+      location='output/c.parquet',
+      format='parquet')
+}}
 
+select 
+PassengerId, 
+split_part(Name,',', 2) as FirstName,
+split_part(Name,',', 2) as LastName,
+Name as FullName
+from {{ ref("titanic_2_cols_trans") }} 
+```
+Note how in the last like we use dbt's `ref` function, instead of  `source`, to refer to a alread built mode. Also in the `SELECT` statetments we make use of DuckDB built-in string fuctions to define some of our transformations. 
+
+To materialize this model, we simply execute again `run dbt`. Then a new table `titanic_names` will  be added to our database.
