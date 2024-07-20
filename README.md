@@ -170,7 +170,10 @@ a new file `titanic_2_cols_trans.sql` within  the `models\titanic` folder:
       format='parquet')
 }}
 
--- Second block starts part is duckDB SQL code indicating the transformations, selecting data from source as indicated in sources.yml
+-- Second block starts
+select PassengerId, Name
+from {{ source('titanic_src', 'titanic_tbl') }} 
+-- Second block starts
 select *
 from {{ source('titanic_src', 'titanic_tbl') }} 
 ```
@@ -183,7 +186,7 @@ run dbt
 ```
 If things go well,  you will see a message that the process has been completed successfully.
 
-## Referring to a previous model
+## Transformation referring to a previous model
 In the previous section we saw how to specifify in dbt a transformation starting from an external source. In this section we will see how to do the same but departing from a model that has been already build.
 
 Let us create a new file called `titanic_names.sql`
