@@ -116,11 +116,13 @@ Finally, we will create a new file `sources.yml` within the `models\titanic` fol
 version: 2 # indicates dbt version
 
 sources: 
-  - name: titanic_src # reference name for schema keeping csv table
-    meta: 
-      external_location: 'from read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")'
+  - name: titanic_src
+    meta:
+      # next line includes duckdb statement to read data
+      external_location: '(select * from read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv") )'
+      formatter: oldstyle
     tables:
-      - name: titanic_tbl # reference name for the csv table 
+      - name: titanic_tbl
 ```
 
 The external location parameter indicates the duckdb command that will be used to read the data from source. One can indeed test this command by first opening duckdb
@@ -130,8 +132,8 @@ duckdb
 ```
 and then run
 ```sql
-from read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv") 
-select *
+select * from 
+read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv") 
 limit 5;
 ```
 
@@ -156,4 +158,20 @@ Then exit DuckDB by running `.quit`.
 ## Running our first transformation
 
 Our first transformation will be simply to retain only two columns, `Passenger Id` and `Name`, from our `titanic_source` table and saving this into a table called `titanic_2_cols`. This is done, first by creating  
-a new file `titanic_2_cols_trans.sql` within  the `models\titanic` folder
+a new file `titanic_2_cols_trans.sql` within  the `models\titanic` folder:
+
+```sql
+-- #models\titanic\titanic_2_cols_trans.sql
+
+-- First  block starts --
+{{ config(
+      materialized='external',
+      location='output/titanic_2_cols.parquet',
+      format='parquet')
+}}
+
+-- Second block starts part is duckDB SQL code indicating the transformations, selecting data from source as indicated in sources.yml
+select *
+from {{ source('titanic_src', 'titanic_tbl') }} 
+```
+In the first block of the code above is a special function called by dbt that tells where and how to save the data after the transfomation is applied. The next block is a pure SQL select statement. The selection table is a reference to a source (schema + table) as listed in the `sources.yml` file.
