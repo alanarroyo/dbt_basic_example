@@ -2,20 +2,36 @@
 version: 2
 
 models:
-  - name: my_first_dbt_model
-    description: "A starter dbt model"
+  - name: titanic_2_cols_trans
+    description: "Only PassengerId and Name columns from Titanic Dataset"
     columns:
-      - name: id
-        description: "The primary key for this table"
+      - name: PassengerId
+        description: "Primary key for this table"
         data_tests:
           - unique
           - not_null
-
-  - name: my_second_dbt_model
-    description: "A starter dbt model"
-    columns:
-      - name: id
-        description: "The primary key for this table"
+      - name: Name
+        description: "Passenger's full name"
         data_tests:
+          - not_null
+
+  - name: titanic_names
+    description: "Table with passenger names parsed"
+    columns:
+      - name: PassengerId
+        description: "Primary key for this table"
+        data_tests: 
           - unique
+          - not_null
+      - name: FirstName
+        description: "Passenger's first name"
+        data_tests:
+          - not_null
+      - name: LastName
+        description: "Passenger's last name"
+        data_tests:
+          - not_null
+      - name: FullName
+        description: "Passenger's full name"
+        data_tests:
           - not_null

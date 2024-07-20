@@ -9,7 +9,8 @@ and then save the result into a Parquet file that can be easily read by DuckDB (
 
 DuckDB is a Data Base Management System (DBMS) oriented to serve analytic tasks (this is known as OLAP systems). DuckDB was created in 2019 by  Mark Raasveldt and Hannes Mühleisen at the Centrum Wiskunde & Informatica (CWI) in the Netherlands. DuckDB is designed to be simple to use, which is the main reason why we use it for this tutorial. You can find [here](https://duckdb.org/why_duckdb) more information about DuckDB features.
 
-Data build tool (dbt) is a framework and command like tool invented in 2016 that allows having version control in data transformations specified in SQL and in Python.
+Data build tool (dbt) is a framework and command like tool created in 2016 by RJMetrics, enabling automated and version-controled data transformations in datawarehouses. These transformations, referred as models, are 
+ specified separate files written in SQL and in Python.
 
 ## Required installation
 
@@ -219,3 +220,89 @@ from {{ ref("titanic_2_cols_trans") }}
 Note how in the last like we use dbt's `ref` function, instead of  `source`, to refer to a alread built mode. Also in the `SELECT` statetments we make use of DuckDB built-in string fuctions to define some of our transformations. 
 
 To materialize this model, we simply execute again `run dbt`. Then a new table `titanic_names` will  be added to our database.
+
+##  Schema and data tests
+Although dbt can be seen as a framework to automate data transformation, it should also be seen as a great tool for documenting the lineage of your data, and also it can facilitate the use of automated tests to ensure the quality of your data.  In this section we will learn how to use some of these functionalities.
+
+To do this, we open  `models\titanic\schema.yml` file and replace its content with the following: 
+
+```yaml
+# schema.yml
+version: 2
+
+models:
+  - name: titanic_2_cols_trans
+    description: "Only PassengerId and Name columns from Titanic Dataset"
+    columns:
+      - name: PassengerId
+        description: "Primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: Name
+        description: "Passenger's full name"
+        data_tests:
+          - not_null
+          
+  - name: titanic_names
+    description: "Table with passenger names parsed"
+    columns:
+      - name: PassengerId
+        description: "Primary key for this table"
+        data_tests: 
+          - unique
+          - not_null
+      - name: FirstName
+        description: "Passenger's first name"
+        data_tests:
+          - not_null
+      - name: LastName
+        description: "Passenger's last name"
+        data_tests:
+          - not_null
+      - name: FullName
+        description: "Passenger's full name"
+        data_tests:
+          - not_null
+```
+
+This file can be used to document the following:
+- table and column names;
+- descriptions of our data assets; and
+- data completeness and quality tests that are appropriate for each column.
+
+We can ask dbt to run the data tests prescribed in `schema.yml` by simply running the following:
+
+```bash
+dbt test
+```
+If all went smoothly, you should log a summary of the tests performed and their results as follows:
+```bash
+07:10:58  1 of 8 START test not_null_titanic_2_cols_trans_Name ........................... [RUN]
+07:10:58  1 of 8 PASS not_null_titanic_2_cols_trans_Name ................................. [PASS in 0.14s]
+07:10:58  2 of 8 START test not_null_titanic_2_cols_trans_PassengerId .................... [RUN]
+07:10:58  2 of 8 PASS not_null_titanic_2_cols_trans_PassengerId .......................... [PASS in 0.05s]
+07:10:58  3 of 8 START test not_null_titanic_names_FirstName ............................. [RUN]
+07:10:58  3 of 8 PASS not_null_titanic_names_FirstName ................................... [PASS in 0.06s]
+07:10:58  4 of 8 START test not_null_titanic_names_FullName .............................. [RUN]
+07:10:59  4 of 8 PASS not_null_titanic_names_FullName .................................... [PASS in 0.23s]
+07:10:59  5 of 8 START test not_null_titanic_names_LastName .............................. [RUN]
+07:10:59  5 of 8 PASS not_null_titanic_names_LastName .................................... [PASS in 0.10s]
+07:10:59  6 of 8 START test not_null_titanic_names_PassengerId ........................... [RUN]
+07:10:59  6 of 8 PASS not_null_titanic_names_PassengerId ................................. [PASS in 0.06s]
+07:10:59  7 of 8 START test unique_titanic_2_cols_trans_PassengerId ...................... [RUN]
+07:10:59  7 of 8 PASS unique_titanic_2_cols_trans_PassengerId ............................ [PASS in 0.07s]
+07:10:59  8 of 8 START test unique_titanic_names_PassengerId ............................. [RUN]
+07:10:59  8 of 8 PASS unique_titanic_names_PassengerId ................................... [PASS in 0.06s]
+07:10:59  
+07:10:59  Finished running 8 data tests in 0 hours 0 minutes and 1.14 seconds (1.14s).
+```
+
+Tests on specific tables can be performed on specific models by adding the `--select` parameter as shown below:
+```bash
+dbt test --select "titanic_names"
+```
+
+## Concluding remarks
+
+In this tutorial we learned how to build a mock DuckDB database from the Titanic Dataset by using basic functionalities of dbt. The dbt framework brings the power of automation and version control in the context of data transformations. 
