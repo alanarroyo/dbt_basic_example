@@ -175,3 +175,16 @@ select *
 from {{ source('titanic_src', 'titanic_tbl') }} 
 ```
 In the first block of the code above is a special function called by dbt that tells where and how to save the data after the transfomation is applied. The next block is a pure SQL select statement. The selection table is a reference to a source (schema + table) as listed in the `sources.yml` file.
+
+After saving this file, run the following command (assuming that your are located any any subfolder within the project's folder):
+
+```bash
+run dbt
+```
+If things go well,  you will see a message that the process has been completed successfully.
+
+## Referring to a previous model
+In the previous section we saw how to specifify in dbt a transformation starting from an external source. In this section we will see how to do the same but departing from a model that has been already build.
+
+Let us create a new file called `titanic_names.sql`
+
