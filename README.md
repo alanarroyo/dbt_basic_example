@@ -12,7 +12,7 @@ Data Base Management System (DBMS) created in 2019 by  Mark Raasveldt and Hannes
 
 
 
-Data build tool (dbt) is a framework and command line tool created in 2016 by RJMetrics, enabling the design,  automation, and version control of data transformations. The way dbt works is by leveraging from using Jinja templating language to allow us building more expressive, and hence less repetitive,  SQL queries. Dbt also allows referencing between different *models* (tables), making data transformations modular and cleaner.
+Data build tool (dbt) is a framework and command line tool created in 2016 by RJMetrics, enabling the design,  automation, and version control of data transformations. The way dbt works is by using Jinja templating language to allow us building more expressive, and hence less repetitive,  SQL/Python data transformations code. Dbt also allows referencing between different *models* (tables), making data transformations to be modular and cleaner.
 
 
 
@@ -21,7 +21,7 @@ Data build tool (dbt) is a framework and command line tool created in 2016 by RJ
 
 ### Install DuckDB
 
-DuckDB is  installed by running one of following two commands ini the command line:
+DuckDB can be  installed by running one of the two following commands in the terminal:
 
 ```bash
 # Windows
@@ -33,37 +33,33 @@ winget install DuckDB.cli
 brew install duckdb
 ```
 
-One can test if installation worked by running the following:
-```bash
-duckdb
-```
-If things got installed correctly, then you should see 
+To open DuckDb, run `duckdb` command. You will see a screen similar to the one below. 
 ```bash
 Connected to a transient in-memory database.
 Use ".open FILENAME" to reopen on a persistent database.
 D 
 ```
-In order to exit DuckDB  one can type `.quit` + ENTER and that should bring you back to the terminal.
+Type `.quit` + ENTER  to exit DuckDB.
 
 ### Install dbt
 
-Assuming that your command line is situated in your project's folder, let us first start by creating a pip environment for this tutorial. 
+Go to your project's folder. Then create a new pip environment as follows. 
 
 ```bash
 python -m venv venv 
 ```
 
-To activate this virtual environment, we run  
+Activate this environment by running the next command.
 ```bash
 source venv/bin/activate
 ```
 
-Once the virtual environment is activated, run 
+Once it is activated, run the following to install DuckDB.
 
 ```bash
 python -m pip install dbt-duckdb
 ```
-To check that dbt got installed correctly, run `dbt --version ` and if no errors are shown then you are good to go.
+Run `dbt --version ` and the are no errors, then you are good to go.
 
 ## Running dbt for the first time
 Run
