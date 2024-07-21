@@ -1,16 +1,21 @@
 # DBT Tutorial with a basic example
-In this tutorial we will show how to run a dbt data pipeline.  To achieve this we will learn how to bring the [Titanic Datatset](https://www.genome.gov/)
+The goal of this tutorial is to learn  how to use dbt (data build tool) to design and run a  basic data  transformation pipeline.  We will extract and transform two columns from the [Titanic Datatset](https://www.kaggle.com/c/titanic/data)
 into a DuckDB database. 
 
 ## Overview
 
-In a simple data pipeline, data is ingested from a source system into our target system. For this basic example, we will take a csv file with the Titanic Dataset saved in a [GitHub repository](https://github.com/datasciencedojo/datasets/blob/master/titanic.csv) (this our source), read it using DuckDB's `read_csv` function, apply some data transformations as specified in our dbt files, 
-and then save the result into a Parquet file that can be easily read by DuckDB (our target system).
+In simple data pipelines, data is ingested from a source system into our target system. In this tutorial, our source system is the Titanic Dataset saved as a csv in a [github repository](https://github.com/datasciencedojo/datasets/blob/master/titanic.csv), while our target system is a DuckDB database.
 
-DuckDB is a Data Base Management System (DBMS) oriented to serve analytic tasks (this is known as OLAP systems). DuckDB was created in 2019 by  Mark Raasveldt and Hannes Mühleisen at the Centrum Wiskunde & Informatica (CWI) in the Netherlands. DuckDB is designed to be simple to use, which is the main reason why we use it for this tutorial. You can find [here](https://duckdb.org/why_duckdb) more information about DuckDB features.
 
-Data build tool (dbt) is a framework and command like tool created in 2016 by RJMetrics, enabling automated and version-controled data transformations in datawarehouses. These transformations, referred as models, are 
- specified separate files written in SQL and in Python.
+DuckDB is an OLAP
+Data Base Management System (DBMS) created in 2019 by  Mark Raasveldt and Hannes Mühleisen. Although dbt can work with different kinds of DBMSs and data warehouses on the cloud, we chose DuckDB as it simple and runs locally on any desktop computer. 
+
+
+
+Data build tool (dbt) is a framework and command line tool created in 2016 by RJMetrics, enabling the design,  automation, and version control of data transformations. The way dbt works is by leveraging from using Jinja templating language to allow us building more expressive, and hence less repetitive,  SQL queries. Dbt also allows referencing between different *models* (tables), making data transformations modular and cleaner.
+
+
+
 
 ## Required installation
 
